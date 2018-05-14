@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.smart.fragment.ICommitCallBack;
 import lib.smart.fragment.R;
 import lib.smart.fragment.SmartFragment;
 
@@ -42,7 +43,15 @@ public class MainFragment extends SmartFragment {
         fragmentList.add(Fragment1.newInstance());
         fragmentList.add(Fragment2.newInstance());
         fragmentList.add(Fragment3.newInstance());
-        addChild(fragmentList,R.id.mainFG_frameLayout,getTAG());
+        addChild(fragmentList, R.id.mainFG_frameLayout, getTAG(), new ICommitCallBack() {
+            @Override
+            public void onCommit(SmartFragment fragment) {
+                fragment.getModel().popEnterAnim = false;
+                fragment.getModel().popExitAnim = false;
+                fragment.getModel().enterAnim = false;
+                fragment.getModel().exitAnim = false;
+            }
+        });
         show(fragmentList.get(0));
 
         findViewById(R.id.textView1).setOnClickListener(new View.OnClickListener() {

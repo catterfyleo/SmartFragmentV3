@@ -38,5 +38,13 @@ public class Fragment2 extends SmartFragment {
         getModel().popExitAnim = false;
         getModel().enterAnim = false;
         getModel().exitAnim = false;
+        findViewById(R.id.text2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                   startFragment(new Fragment4());
+
+
+            }
+        });
     }
 }

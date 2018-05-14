@@ -17,7 +17,7 @@ public interface ISmartFunction {
 
     void add(List<SmartFragment> fragmentList, int containerViewId);
 
-    void addChild(List<SmartFragment> fragmentList, int containerViewId,String parentTag);
+    void addChild(List<SmartFragment> fragmentList, int containerViewId,String parentTag,ICommitCallBack commitCallBack);
 
 
 

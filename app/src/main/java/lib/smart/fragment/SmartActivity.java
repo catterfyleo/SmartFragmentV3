@@ -122,7 +122,7 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
     }
 
     @Override
-    public void addChild(List<SmartFragment> fragmentList, int containerViewId, String parentTag) {
+    public void addChild(List<SmartFragment> fragmentList, int containerViewId, String parentTag, final ICommitCallBack commitCallBack) {
         for(SmartFragment fragment : fragmentList){
             FragmentModel model = new FragmentModel();
             model.tag = fragment.getTAG();
@@ -142,7 +142,12 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
             model.popEnterAnimation = animation.popEnterAnimation(getApplicationContext());
             model.popExitAnimation = animation.popExitAnimation(getApplicationContext());
             model.index = fragmentManager.getFragments().size();
-            add(fragment,model,null);
+            add(fragment, model, new ICommitCallBack() {
+                @Override
+                public void onCommit(SmartFragment fragment) {
+                    commitCallBack.onCommit(fragment);
+                }
+            });
         }
     }
 

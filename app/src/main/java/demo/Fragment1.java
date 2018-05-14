@@ -35,10 +35,7 @@ public class Fragment1 extends SmartFragment {
     @Override
     public void initList() {
         super.initList();
-        getModel().popEnterAnim = false;
-        getModel().popExitAnim = false;
-        getModel().enterAnim = false;
-        getModel().exitAnim = false;
+
         findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
