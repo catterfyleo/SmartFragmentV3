@@ -169,7 +169,12 @@ public class SmartFragment extends Fragment implements
     public void onSwipeLayoutClosed() {
         getModel().exitAnim = false;
         getForeModel().popEnterAnim = false;
-        remove(getTAG());
+        remove(getTAG(), new ICommitCallBack() {
+            @Override
+            public void onCommit(SmartFragment fragment) {
+                getForeModel().popEnterAnim = true;
+            }
+        });
         InputHelper.hideSoftInput(getSwipeBackLayout());
     }
 
@@ -226,13 +231,13 @@ public class SmartFragment extends Fragment implements
     }
 
     @Override
-    public void remove(SmartFragment fragment) {
-        getSmartActivity().remove(fragment);
+    public void remove(SmartFragment fragment,ICommitCallBack commitCallBack) {
+        getSmartActivity().remove(fragment,commitCallBack);
     }
 
     @Override
-    public void remove(String tag) {
-        getSmartActivity().remove(tag);
+    public void remove(String tag,ICommitCallBack commitCallBack) {
+        getSmartActivity().remove(tag,commitCallBack);
     }
 
 
@@ -252,7 +257,7 @@ public class SmartFragment extends Fragment implements
         add(start, getModel().containerViewId, new ICommitCallBack() {
             @Override
             public void onCommit(SmartFragment fragment) {
-                remove(getTAG());
+                remove(getTAG(),null);
                 show(fragment);
             }
         });
@@ -277,7 +282,7 @@ public class SmartFragment extends Fragment implements
             public void onCommit(SmartFragment fragment) {
                 fragment.getModel().enterAnim = false;
                 getModel().exitAnim = false;
-                remove(getTAG());
+                remove(getTAG(),null);
                 show(fragment);
             }
         });

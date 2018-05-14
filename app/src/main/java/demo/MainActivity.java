@@ -34,7 +34,6 @@ public class MainActivity extends SmartActivity {
 
     @Override
     public void onBackPressed() {
-//
         if(!backPressed()){
             super.onBackPressed();
         }

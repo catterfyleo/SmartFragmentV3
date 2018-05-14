@@ -32,9 +32,9 @@ public interface ISmartFunction {
     void showHideAllChild(SmartFragment fragment);
 
 
-    void remove(SmartFragment fragment);
+    void remove(SmartFragment fragment,ICommitCallBack commitCallBack);
 
-    void remove(String tag);
+    void remove(String tag,ICommitCallBack commitCallBack);
 
 
 

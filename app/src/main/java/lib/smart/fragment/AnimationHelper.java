@@ -19,8 +19,6 @@ public class AnimationHelper {
 
     private FragmentModel model;
 
-
-
     public AnimationHelper(SmartActivity smartActivity,SmartFragment fragment){
         this.fragment = fragment;
         model = smartActivity.findModelByTag(fragment.getTAG());
