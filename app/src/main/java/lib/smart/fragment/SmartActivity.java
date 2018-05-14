@@ -206,8 +206,8 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
         FragmentModel model = findModelByTag(fragment.getTAG());
         for(int i = 0 ; i < fragmentModelList.size() ; i ++){
             FragmentModel m = fragmentModelList.get(i);
-            if(!m.isRoot && m.parentTag.equals(model.parentTag)){
-                if(!m.tag.equals(model.tag)){
+            if(model.containerViewId == m.containerViewId){
+                if(m.tag != model.tag){
                     hide(m.tag);
                 }
             }
