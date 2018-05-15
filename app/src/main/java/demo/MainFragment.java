@@ -46,6 +46,8 @@ public class MainFragment extends SmartFragment {
         addChild(fragmentList, R.id.mainFG_frameLayout, getTAG(), new ICommitCallBack() {
             @Override
             public void onCommit(SmartFragment fragment) {
+                fragment.getModel().swipeBack = false;
+                fragment.getSwipeBackLayout().setOpenTouchSlide(false);
                 fragment.getModel().popEnterAnim = false;
                 fragment.getModel().popExitAnim = false;
                 fragment.getModel().enterAnim = false;

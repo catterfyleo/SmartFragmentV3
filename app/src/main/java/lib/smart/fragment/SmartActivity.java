@@ -224,13 +224,13 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
         if(foreModel.popEnterAnim){
             foreFragment.getAnimationHelper().popEnterAnimation(0);
         }
+        removeTag(fragment.getTAG());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 transaction.remove(fragment);
                 transaction.show(foreFragment);
                 transaction.commit();
-                removeTag(fragment.getTAG());
                 transaction.runOnCommit(new Runnable() {
                     @Override
                     public void run() {
@@ -241,7 +241,7 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
                     }
                 });
             }
-        },duration);
+        }, duration);
 
 
     }
@@ -307,9 +307,9 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
     }
 
     private void addToLinkedList(FragmentModel model){
-        if(!hasTag(model.tag)){
+//        if(!hasTag(model.tag)){
             fragmentModelList.add(model);
-        }
+//        }
     }
 
     public boolean canBack(){

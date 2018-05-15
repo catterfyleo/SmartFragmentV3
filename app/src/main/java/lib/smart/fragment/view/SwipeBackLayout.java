@@ -215,26 +215,32 @@ public class SwipeBackLayout extends FrameLayout {
         }
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:
-                actionIndex = ev.getActionIndex();
-                pointerId = ev.getPointerId(actionIndex);
-                downY = (int) ev.getY(pointerId);
-                downX = (int) ev.getX(pointerId);
-                if(downX < minToucheSlide){
-                    isSlide = true;
-                }
-                touchFlag = -1;
+                try {
+                    actionIndex = ev.getActionIndex();
+                    pointerId = ev.getPointerId(actionIndex);
+                    downY = (int) ev.getY(pointerId);
+                    downX = (int) ev.getX(pointerId);
+                    if(downX < minToucheSlide){
+                        isSlide = true;
+                    }
+                    touchFlag = -1;
+                }catch (IllegalArgumentException i){}
                 break;
             case MotionEvent.ACTION_MOVE:
-                moveY = (int) ev.getY(pointerId);
-                moveX = (int) ev.getX(pointerId);
-                if(Math.abs(moveY - downY) > 10 || Math.abs(moveX - downX) > 10){
-                    if(Math.abs(moveX - downX) + 5 > Math.abs(moveY - downY) && isSlide){
-                        if(touchFlag == -1){
-                            touchFlag = 1;
+                try {
+                    moveY = (int) ev.getY(pointerId);
+                    moveX = (int) ev.getX(pointerId);
+                    if(Math.abs(moveY - downY) > 10 || Math.abs(moveX - downX) > 10){
+                        if(Math.abs(moveX - downX) + 5 > Math.abs(moveY - downY) && isSlide){
+                            if(touchFlag == -1){
+                                touchFlag = 1;
+                            }
+                        }else{
+                            touchFlag = 2;
                         }
-                    }else{
-                        touchFlag = 2;
                     }
+                }catch (IllegalArgumentException i){
+
                 }
                 break;
         }
@@ -287,9 +293,9 @@ public class SwipeBackLayout extends FrameLayout {
             case MotionEvent.ACTION_UP:
                 if(contentView.getX() != 0 && moveX < maxMoveX){
                     resetContentView();
-                } else if(contentView.getX() != 0 && contentView.getX() < viewWidth/3 ){
+                } else if(contentView.getX() != 0 && contentView.getX() < viewWidth/4 ){
                     resetContentView();
-                }else if(contentView.getX() != 0 && contentView.getX() > viewWidth/3){
+                }else if(contentView.getX() != 0 && contentView.getX() > viewWidth/4){
                     closeContentView();
                 }
                 clear();
