@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import lib.smart.fragment.ICommitCallBack;
 import lib.smart.fragment.R;
@@ -27,6 +30,8 @@ public class Fragment1 extends SmartFragment {
         return fragment;
     }
 
+    private ListView listView;
+
     @Override
     public View initView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return View.inflate(getContext(), R.layout.f_1,null);
@@ -35,20 +40,32 @@ public class Fragment1 extends SmartFragment {
     @Override
     public void initList() {
         super.initList();
-
-        findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+        listView = findViewById(R.id.f1_listView);
+        listView.setAdapter(new BaseAdapter() {
             @Override
-            public void onClick(View v) {
-//                add(new Fragment4(), R.id.contentFrameLayout, new ICommitCallBack() {
-//                    @Override
-//                    public void onCommit(SmartFragment fragment) {
-//                        show(fragment);
-//                    }
-//                });
-                if(getParentSmartFragment() != null){
-                    getParentSmartFragment().startFragment(new Fragment4());
-                }
+            public int getCount() {
+                return 15;
+            }
 
+            @Override
+            public Object getItem(int position) {
+                return null;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                return convertView = View.inflate(getContext(),R.layout.item_1,null);
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                getParentSmartFragment().startFragment(new Fragment4());
             }
         });
     }
