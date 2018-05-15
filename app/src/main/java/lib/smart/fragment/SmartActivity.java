@@ -47,7 +47,7 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
             String lastTag = fragmentModelList.getLast().tag;
             SmartFragment lastFragment = (SmartFragment) fragmentManager.findFragmentByTag(lastTag);
             if(lastFragment != null){
-                remove(lastFragment);
+                remove(lastFragment,null);
             }
             return true;
         }else{
@@ -122,7 +122,7 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
     }
 
     @Override
-    public void addChild(List<SmartFragment> fragmentList, int containerViewId, String parentTag) {
+    public void addChild(List<SmartFragment> fragmentList, int containerViewId, String parentTag,ICommitCallBack commitCallBack) {
         for(SmartFragment fragment : fragmentList){
             FragmentModel model = new FragmentModel();
             model.tag = fragment.getTAG();
@@ -142,7 +142,7 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
             model.popEnterAnimation = animation.popEnterAnimation(getApplicationContext());
             model.popExitAnimation = animation.popExitAnimation(getApplicationContext());
             model.index = fragmentManager.getFragments().size();
-            add(fragment,model,null);
+            add(fragment,model,commitCallBack);
         }
     }
 
@@ -211,7 +211,7 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
     }
 
     @Override
-    public void remove(final SmartFragment fragment) {
+    public void remove(final SmartFragment fragment, final ICommitCallBack commitCallBack) {
         FragmentModel model = findModelByTag(fragment.getTAG());
         FragmentModel foreModel = findForeModelByTag(fragment.getTAG());
         final SmartFragment foreFragment = findFragmentByTag(foreModel.tag);
@@ -234,6 +234,9 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
                 transaction.runOnCommit(new Runnable() {
                     @Override
                     public void run() {
+                        if(commitCallBack != null){
+                            commitCallBack.onCommit(foreFragment);
+                        }
                         foreFragment.smartUserVisible(true);
                     }
                 });
@@ -244,9 +247,9 @@ public class SmartActivity extends AppCompatActivity implements ISmartFunction {
     }
 
     @Override
-    public void remove(String tag) {
+    public void remove(String tag,final ICommitCallBack commitCallBack) {
         SmartFragment fragment = findFragmentByTag(tag);
-        remove(fragment);
+        remove(fragment,commitCallBack);
     }
 
     //---------------------------------find-------------------------------------
