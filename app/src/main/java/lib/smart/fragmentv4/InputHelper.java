@@ -1,4 +1,4 @@
-package lib.smart.fragment;
+package lib.smart.fragmentv4;
 
 import android.content.Context;
 import android.view.View;

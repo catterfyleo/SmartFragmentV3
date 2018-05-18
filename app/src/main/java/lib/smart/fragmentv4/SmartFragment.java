@@ -2,6 +2,7 @@ package lib.smart.fragmentv4;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,7 +12,10 @@ import android.view.ViewGroup;
 
 import java.util.UUID;
 
-import lib.smart.fragment.view.SwipeBackLayout;
+import lib.smart.fragmentv4.view.SwipeBackLayout;
+import lib.smart.fragmentv4.anim.DefaultFragmentAnimation;
+import lib.smart.fragmentv4.anim.FragmentAnimController;
+import lib.smart.fragmentv4.anim.VerticalFragmentAnimation;
 
 /**
  * Created by Augustine on 2018/5/15.
@@ -99,6 +103,14 @@ public class SmartFragment extends Fragment
         if(fragmentChangedListener != null){
             fragmentChangedListener.userVisible(visible);
         }
+        if(visible){
+            getSwipeBackLayout().setOpenTouchSlide(getFragmentModel().swipeBack);
+            if(getSwipeBackLayout().getContentX() < 0){
+                getSwipeBackLayout().setContentViewX(999999);
+            }
+        }else{
+            getSwipeBackLayout().setOpenTouchSlide(false);
+        }
     }
 
     /**
@@ -115,9 +127,16 @@ public class SmartFragment extends Fragment
         }
         if(foreFragment != null){
             foreSwipeBackLayout = foreFragment.getSwipeBackLayout();
+        }else{
+            getFragmentModel().swipeBack = false;
+            getSwipeBackLayout().setOpenTouchSlide(false);
         }
         animController = new FragmentAnimController(this);
-        animController.setFragmentAnim(new DefaultFragmentAnimation());
+        if(model.parentTag.equals("final")){
+            animController.setFragmentAnim(new VerticalFragmentAnimation());
+        }else{
+            animController.setFragmentAnim(new DefaultFragmentAnimation());
+        }
 
     }
 
@@ -196,6 +215,7 @@ public class SmartFragment extends Fragment
         if(foreModel != null){
             foreModel.popEnterAnim = false;
         }
+        InputHelper.hideSoftInput(getSwipeBackLayout());
         getSmartActivity().remove(this,null);
     }
 
@@ -207,7 +227,7 @@ public class SmartFragment extends Fragment
 
     //-----------------------------------------------------------------------------
 
-
+    @Deprecated
     public void addMain(SmartFragment fragment, int containerViewId, CommitCallBack commitCallBack) {
         getSmartActivity().addMain(fragment,containerViewId,commitCallBack);
     }
@@ -217,7 +237,14 @@ public class SmartFragment extends Fragment
     }
 
     public void addBrother(SmartFragment fragment , CommitCallBack commitCallBack) {
-        getSmartActivity().addBrother(this,fragment,fragmentModel.containerViewId,commitCallBack);
+        getSmartActivity().addBrother(this,fragment,commitCallBack);
+    }
+
+    public void addAlone(SmartFragment fragment, final CommitCallBack commitCallBack) throws Exception {
+        if(getFragmentModel().parentTag.equals("final")){
+            throw new Exception();
+        }
+        getSmartActivity().addAlone(this,fragment,commitCallBack);
     }
 
     public void show(SmartFragment fragment, CommitCallBack commitCallBack) {
@@ -231,4 +258,61 @@ public class SmartFragment extends Fragment
     public void remove(SmartFragment fragment, CommitCallBack commitCallBack) {
         getSmartActivity().remove(fragment,commitCallBack);
     }
+
+    public void removeBrothers(SmartFragment fromFragment,CommitCallBack commitCallBack) {
+        getSmartActivity().removeBrothers(fromFragment,commitCallBack);
+    }
+
+    public void startFragment(SmartFragment smartFragment){
+        if(getSmartActivity().isCanStartFlag()){
+            getSmartActivity().setCanStartFlag(false);
+            addBrother(smartFragment, new CommitCallBack() {
+                @Override
+                public void onCommit(SmartFragment fragment) {
+                    show(fragment, new CommitCallBack() {
+                        @Override
+                        public void onCommit(SmartFragment fragment) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getSmartActivity().setCanStartFlag(true);
+                                }
+                            },300);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    public void startFragmentNoAnim(SmartFragment smartFragment){
+        addBrother(smartFragment, new CommitCallBack() {
+            @Override
+            public void onCommit(SmartFragment fragment) {
+                fragment.getFragmentModel().enterAnim = false;
+                if(fragment.getForeModel() != null){
+                    fragment.getForeModel().popExitAnim = false;
+                }
+                show(fragment,null);
+            }
+        });
+    }
+
+    public void startAloneFragment(SmartFragment smartFragment){
+        try {
+            addAlone(smartFragment, new CommitCallBack() {
+                @Override
+                public void onCommit(SmartFragment fragment) {
+                    if(fragment.getForeModel() != null){
+                        fragment.getForeModel().popExitAnim = false;
+                    }
+                    show(fragment, null);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

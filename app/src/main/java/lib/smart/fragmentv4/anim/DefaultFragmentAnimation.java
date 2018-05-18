@@ -1,4 +1,4 @@
-package lib.smart.fragment.anim;
+package lib.smart.fragmentv4.anim;
 
 import android.content.Context;
 import android.view.animation.Animation;
@@ -7,12 +7,13 @@ import android.view.animation.AnimationUtils;
 import lib.smart.fragment.R;
 
 /**
- * Created by Augustine on 2018/5/11.
+ * Created by Augustine on 2018/5/16.
  * <p>
  * email:nice_ohoh@163.com
  */
 
-public class DefaultAnimation extends FragmentAnimation {
+public class DefaultFragmentAnimation extends FragmentAnimator {
+
 
     @Override
     public Animation enterAnimation(Context context) {

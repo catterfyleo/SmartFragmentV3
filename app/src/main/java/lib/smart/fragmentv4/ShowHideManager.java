@@ -1,7 +1,10 @@
 package lib.smart.fragmentv4;
 
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Created by Augustine on 2018/5/16.
@@ -39,7 +42,7 @@ public class ShowHideManager{
         if(foreFragment == null){
             return;
         }
-        foreFragment.getAnimController().startPopExitAnim(-1);
+        foreFragment.getAnimController().startPopExitAnim(0);
         if(foreFragment.getFragmentModel().foreFragmentTag == null){
             return;
         }
@@ -55,7 +58,7 @@ public class ShowHideManager{
     }
 
     public void hide(SmartFragment fragment) {
-        fragment.getAnimController().startPopExitAnim(-1);
+        fragment.getAnimController().startPopExitAnim(0);
     }
 
     /**
@@ -71,34 +74,55 @@ public class ShowHideManager{
      *
      * @param fragment
      */
-    public void remove(SmartFragment fragment,FragmentTransaction transaction) {
-        fragment.getAnimController().startPopExitAnim(1);
+    public void remove(final SmartFragment fragment, final FragmentTransaction transaction) {
+        fragment.getSwipeBackLayout().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        long duration = fragment.getAnimController().startExitAnim(1);
         if(fragment.getFragmentModel().parentTag == null){
             transaction.commit();
             return;
         }
-        SmartFragment foreFragment =
+        final SmartFragment foreFragment =
                 (SmartFragment) fragmentManager.findFragmentByTag(fragment.getFragmentModel().foreFragmentTag);
         if(foreFragment == null){
             transaction.commit();
             return;
         }
-        foreFragment.getFragmentModel().popEnterAnim = false;
-        foreFragment.getAnimController().startPopEnterAnim(-1);
+        foreFragment.getAnimController().startPopEnterAnim(0);
         if(foreFragment.getFragmentModel().foreFragmentTag == null){
-            transaction.commit();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    transaction.commit();
+                }
+            },duration);
             return;
         }
-        SmartFragment fore2Fragment =
+        final SmartFragment fore2Fragment =
                 (SmartFragment) fragmentManager.findFragmentByTag(foreFragment.getFragmentModel().foreFragmentTag);
         if(fore2Fragment == null){
-            transaction.commit();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    transaction.commit();
+                }
+            },duration);
             return;
         }
-        transaction.show(fore2Fragment);
-        transaction.show(foreFragment);
-        fore2Fragment.smartUserVisible(true);
-        foreFragment.smartUserVisible(true);
-        transaction.commit();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                transaction.show(fore2Fragment);
+                transaction.show(foreFragment);
+                fore2Fragment.smartUserVisible(true);
+                foreFragment.smartUserVisible(true);
+                transaction.commit();
+            }
+        },duration);
     }
 }

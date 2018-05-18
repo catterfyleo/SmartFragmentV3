@@ -74,8 +74,7 @@ public class TestFragment4 extends SmartFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TestFragment4 testFragment4 = TestFragment4.newInstance();
-                addBrother(testFragment4,null);
-                show(testFragment4,null);
+                startFragment(testFragment4);
             }
         });
         Random random = new Random();

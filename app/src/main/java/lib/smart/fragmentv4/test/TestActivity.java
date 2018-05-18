@@ -42,4 +42,12 @@ public class TestActivity extends SmartActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if(!canBack()){
+            super.onBackPressed();
+        }
+    }
 }

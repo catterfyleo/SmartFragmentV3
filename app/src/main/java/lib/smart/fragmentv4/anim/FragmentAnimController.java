@@ -1,6 +1,8 @@
-package lib.smart.fragmentv4;
+package lib.smart.fragmentv4.anim;
 
 import android.support.v4.view.ViewCompat;
+
+import lib.smart.fragmentv4.SmartFragment;
 
 /**
  * Created by Augustine on 2018/5/15.
@@ -33,6 +35,7 @@ public class FragmentAnimController {
             return duration;
         }
         if(fragment.getFragmentModel().enterAnim){
+            fragment.getSwipeBackLayout().setContentViewX(99999);
             ViewCompat.setTranslationZ(fragment.getSwipeBackLayout(),z);
             fragment.getSwipeBackLayout().startAnimation(fragment.getFragmentModel().enterAnimation);
         }else{
@@ -42,7 +45,7 @@ public class FragmentAnimController {
     }
 
     public long startExitAnim(int z){
-        long duration = fragment.getFragmentModel().enterAnimation.getDuration();
+        long duration = fragment.getFragmentModel().exitAnimation.getDuration();
         if(fragment.getSwipeBackLayout() == null){
             return duration;
         }
@@ -56,7 +59,7 @@ public class FragmentAnimController {
     }
 
     public long startPopEnterAnim(int z){
-        long duration = fragment.getFragmentModel().enterAnimation.getDuration();
+        long duration = fragment.getFragmentModel().popEnterAnimation.getDuration();
         if(fragment.getSwipeBackLayout() == null){
             return duration;
         }
@@ -70,7 +73,7 @@ public class FragmentAnimController {
     }
 
     public long startPopExitAnim(int z){
-        long duration = fragment.getFragmentModel().enterAnimation.getDuration();
+        long duration = fragment.getFragmentModel().popExitAnimation.getDuration();
         if(fragment.getSwipeBackLayout() == null){
             return duration;
         }

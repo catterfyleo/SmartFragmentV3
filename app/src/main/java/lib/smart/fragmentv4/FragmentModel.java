@@ -24,9 +24,13 @@ public class FragmentModel {
     //兄弟关系使用
     public String foreFragmentTag;
 
+    //兄长
+    //如果tag == brotherParentTag，表示自身是兄长
+    public String brotherParentTag;
+
     public boolean isHidden = true;
 
-    public boolean swipeBack = false;
+    public boolean swipeBack = true;
 
     //是否初始化数据
     public boolean isInit = false;

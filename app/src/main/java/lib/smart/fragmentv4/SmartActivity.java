@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
+import java.util.List;
 
 /**
  * Created by Augustine on 2018/5/15.
@@ -22,6 +23,12 @@ public class SmartActivity extends AppCompatActivity
 
     private ShowHideManager showHideManager;
 
+    //防止回退过快
+    private boolean backPressed = true;
+
+    //防止启动过快
+    private boolean canStartFlag = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +36,29 @@ public class SmartActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         showHideManager = new ShowHideManager();
         showHideManager.setFragmentManager(fragmentManager);
+        if(savedInstanceState != null){
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            for(int i = 0 ; i < fragmentManager.getFragments().size() ; i ++){
+                transaction.remove(fragmentManager.getFragments().get(i));
+            }
+            transaction.commit();
+        }
+    }
+
+    public boolean canBack(){
+        if(fragmentList.findModelsByParentTag("main").size() > 1){
+            if(backPressed){
+                backPressed = false;
+                removeLast(new CommitCallBack() {
+                    @Override
+                    public void onCommit(SmartFragment fragment) {
+                        backPressed = true;
+                    }
+                });
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -43,6 +73,7 @@ public class SmartActivity extends AppCompatActivity
         model.isHidden = true;
         model.swipeBack = false;
         model.isInit = false;
+        model.brotherParentTag = fragment.getTAG();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -53,10 +84,10 @@ public class SmartActivity extends AppCompatActivity
         transaction.runOnCommit(new Runnable() {
             @Override
             public void run() {
+                fragment.addComplete(model);
                 if(commitCallBack != null){
                     commitCallBack.onCommit(fragment);
                 }
-                fragment.addComplete(model);
             }
         });
     }
@@ -73,6 +104,7 @@ public class SmartActivity extends AppCompatActivity
         model.isInit = false;
         model.isRoot = false;
         model.containerViewId = containerViewId;
+        model.brotherParentTag = fragment.getTAG();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -83,28 +115,27 @@ public class SmartActivity extends AppCompatActivity
         transaction.runOnCommit(new Runnable() {
             @Override
             public void run() {
+                fragment.addComplete(model);
                 if(commitCallBack != null){
                     commitCallBack.onCommit(fragment);
                 }
-                fragment.addComplete(model);
             }
         });
     }
 
     @Override
-    public void addBrother(SmartFragment startF, final SmartFragment fragment, int containerViewId, final CommitCallBack commitCallBack) {
+    public void addBrother(SmartFragment startF, final SmartFragment fragment, final CommitCallBack commitCallBack) {
         final FragmentModel model = new FragmentModel();
         model.tag = fragment.getTAG();
         model.index = fragmentList.getSize();
         model.parentTag = startF.getFragmentModel().parentTag;
         model.foreFragmentTag = startF.getTAG();
-        Log.e("addBrother","foreFragmentTag:   "+model.foreFragmentTag);
-        Log.e("addBrother","parentTag:   "+model.parentTag);
         model.isHidden = true;
-        model.swipeBack = false;
+        model.swipeBack = true;
         model.isInit = false;
-        model.isRoot = false;
-        model.containerViewId = containerViewId;
+        model.isRoot = true;
+        model.containerViewId = startF.getFragmentModel().containerViewId;
+        model.brotherParentTag = startF.getFragmentModel().brotherParentTag;
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -115,13 +146,45 @@ public class SmartActivity extends AppCompatActivity
         transaction.runOnCommit(new Runnable() {
             @Override
             public void run() {
+                fragment.addComplete(model);
                 if(commitCallBack != null){
                     commitCallBack.onCommit(fragment);
                 }
-                fragment.addComplete(model);
             }
         });
     }
+
+    @Override
+    public void addAlone(SmartFragment startF, final SmartFragment fragment, final CommitCallBack commitCallBack) {
+        final FragmentModel model = new FragmentModel();
+        model.tag = fragment.getTAG();
+        model.parentTag = "final";
+        model.brotherParentTag = "final";
+        model.index = fragmentList.getSize();
+        model.foreFragmentTag = null;
+        model.isHidden = true;
+        model.swipeBack = false;
+        model.isInit = false;
+        model.isRoot = true;
+        model.containerViewId = startF.getFragmentModel().containerViewId;
+        fragmentList.addModel(model);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if(!fragment.isAdded()){
+            transaction.add(model.containerViewId,fragment,model.tag);
+        }
+        transaction.hide(fragment);
+        transaction.commit();
+        transaction.runOnCommit(new Runnable() {
+            @Override
+            public void run() {
+                fragment.addComplete(model);
+                if(commitCallBack != null){
+                    commitCallBack.onCommit(fragment);
+                }
+            }
+        });
+    }
+
 
     @Override
     public void show(final SmartFragment fragment, final CommitCallBack commitCallBack) {
@@ -131,14 +194,14 @@ public class SmartActivity extends AppCompatActivity
         transaction.runOnCommit(new Runnable() {
             @Override
             public void run() {
-                if(commitCallBack != null){
-                    commitCallBack.onCommit(fragment);
-                }
                 if(!fragment.getFragmentModel().isInit){
                     fragment.initList();
                     fragment.getFragmentModel().isInit = true;
                 }
                 showHideManager.show(fragment);
+                if(commitCallBack != null){
+                    commitCallBack.onCommit(fragment);
+                }
             }
         });
     }
@@ -151,10 +214,10 @@ public class SmartActivity extends AppCompatActivity
         transaction.runOnCommit(new Runnable() {
             @Override
             public void run() {
+                showHideManager.hide(fragment);
                 if(commitCallBack != null){
                     commitCallBack.onCommit(fragment);
                 }
-                showHideManager.hide(fragment);
             }
         });
     }
@@ -167,12 +230,41 @@ public class SmartActivity extends AppCompatActivity
         transaction.runOnCommit(new Runnable() {
             @Override
             public void run() {
-                if(commitCallBack != null){
-                    commitCallBack.onCommit(fragment);
-                }
                 fragmentList.remove(fragment.getTAG());
+                if(commitCallBack != null){
+                    commitCallBack.onCommit(null);
+                }
             }
         });
+    }
+
+    @Override
+    public void removeBrothers(final SmartFragment fromFragment, final CommitCallBack commitCallBack) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final List<FragmentModel> childModelList = fragmentList.findBrotherModelsByTag(fromFragment.getTAG());
+        for(FragmentModel childModel : childModelList){
+            SmartFragment fragment = (SmartFragment) fragmentManager.findFragmentByTag(childModel.tag);
+            transaction.remove(fragment);
+        }
+        transaction.commit();
+        transaction.runOnCommit(new Runnable() {
+            @Override
+            public void run() {
+                for(FragmentModel model : childModelList){
+                        fragmentList.remove(model.tag);
+                }
+                if(commitCallBack != null){
+                    commitCallBack.onCommit(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeLast(CommitCallBack commitCallBack) {
+        FragmentModel lastModel = fragmentList.getLastModel();
+        SmartFragment lastFragment = (SmartFragment) fragmentManager.findFragmentByTag(lastModel.tag);
+        remove(lastFragment,commitCallBack);
     }
 
 //--------------------------------------------------------------------------------
@@ -184,5 +276,13 @@ public class SmartActivity extends AppCompatActivity
 
     public ShowHideManager getShowHideManager() {
         return showHideManager;
+    }
+
+    public boolean isCanStartFlag() {
+        return canStartFlag;
+    }
+
+    public void setCanStartFlag(boolean canStartFlag) {
+        this.canStartFlag = canStartFlag;
     }
 }

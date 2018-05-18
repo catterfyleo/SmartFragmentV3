@@ -59,10 +59,44 @@ public class FragmentList {
         return null;
     }
 
+    /**
+     * 根据tag 查找自己的兄弟model，但是不包含自己
+     */
+    public List<FragmentModel> findBrotherModelsByTag(String tag){
+        FragmentModel fromModel = findModelByTag(tag);
+        List<FragmentModel> list = new ArrayList<>();
+        for(FragmentModel model : modelList){
+            if(model.brotherParentTag.equals(fromModel.brotherParentTag)){
+               if(!model.brotherParentTag.equals(model.tag)){
+                   list.add(model);
+               }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 根据parentTag查找models
+     * @param parentTag
+     * @return
+     */
+    public List<FragmentModel> findModelsByParentTag(String parentTag){
+        List<FragmentModel> list = new ArrayList<>();
+        for(FragmentModel model : modelList){
+            if(model.parentTag.equals(parentTag)){
+                list.add(model);
+            }
+        }
+        return list;
+    }
+
     public int getSize(){
         return modelList.size();
     }
 
 
+    public FragmentModel getLastModel(){
+        return modelList.get(modelList.size()-1);
+    }
 }
 
