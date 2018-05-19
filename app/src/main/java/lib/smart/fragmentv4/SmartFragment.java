@@ -286,33 +286,82 @@ public class SmartFragment extends Fragment
     }
 
     public void startFragmentNoAnim(SmartFragment smartFragment){
-        addBrother(smartFragment, new CommitCallBack() {
-            @Override
-            public void onCommit(SmartFragment fragment) {
-                fragment.getFragmentModel().enterAnim = false;
-                if(fragment.getForeModel() != null){
-                    fragment.getForeModel().popExitAnim = false;
+        if(getSmartActivity().isCanStartFlag()) {
+            addBrother(smartFragment, new CommitCallBack() {
+                @Override
+                public void onCommit(SmartFragment fragment) {
+                    fragment.getFragmentModel().enterAnim = false;
+                    if (fragment.getForeModel() != null) {
+                        fragment.getForeModel().popExitAnim = false;
+                    }
+                    show(fragment, new CommitCallBack() {
+                        @Override
+                        public void onCommit(SmartFragment fragment) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getSmartActivity().setCanStartFlag(true);
+                                }
+                            },300);
+                        }
+                    });
                 }
-                show(fragment,null);
-            }
-        });
+            });
+        }
     }
 
     public void startAloneFragment(SmartFragment smartFragment){
         try {
-            addAlone(smartFragment, new CommitCallBack() {
-                @Override
-                public void onCommit(SmartFragment fragment) {
-                    if(fragment.getForeModel() != null){
-                        fragment.getForeModel().popExitAnim = false;
+            if(getSmartActivity().isCanStartFlag()) {
+                addAlone(smartFragment, new CommitCallBack() {
+                    @Override
+                    public void onCommit(SmartFragment fragment) {
+                        if (fragment.getForeModel() != null) {
+                            fragment.getForeModel().popExitAnim = false;
+                        }
+                        show(fragment, new CommitCallBack() {
+                            @Override
+                            public void onCommit(SmartFragment fragment) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getSmartActivity().setCanStartFlag(true);
+                                    }
+                                },300);
+                            }
+                        });
                     }
-                    show(fragment, null);
-                }
-            });
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+    public void startFragmentRemoveSelf(SmartFragment smartFragment){
+        if(getSmartActivity().isCanStartFlag()){
+            getSmartActivity().setCanStartFlag(false);
+            addBrother(smartFragment, new CommitCallBack() {
+                @Override
+                public void onCommit(SmartFragment fragment) {
+                    show(fragment, new CommitCallBack() {
+                        @Override
+                        public void onCommit(SmartFragment fragment) {
+                            remove(SmartFragment.this,null);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getSmartActivity().setCanStartFlag(true);
+                                }
+                            },300);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
 
 
 }
