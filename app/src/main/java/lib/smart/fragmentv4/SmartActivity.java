@@ -12,6 +12,26 @@ import java.util.List;
  * Created by Augustine on 2018/5/15.
  * <p>
  * email:nice_ohoh@163.com
+ *
+ * v4.2
+ *  1.优化Fragment tag 命名方式，由UUID改为 simpleName + index
+ *    优化前的tag在fragment对象初始化时生成
+ *    优化后的tag生成在添加之前自动生成
+ *  2.Android 4.4 及以下，可能会有动画错乱风险
+ *    建议tab切换时使用 NoFragmentAnimation，或者使用showNoAnim & hideNoAnim
+ *  3.关于Fragment的回收&恢复，4.2版本暂时不考虑此功能
+ *  4.新增smartUserVisible方法
+ *
+ * v4.1
+ *  1.优化Fragment的动画，解决部分安卓版本的错乱问题
+ *  2.优化FragmentModel之间的关系（兄弟关系、嵌套关系、嵌套兄弟关系...）
+ *  3.优化内存管理，当使用SwipeBackLayout时，默认显示当前fragment的前一个fragment
+ *    隐藏之前的所有Fragment
+ *  4.增加无限嵌套
+ *
+ * v4.0
+ *  1.彻底解决卡顿现象，消除Model的循环遍历代码，所有Fragment在add时就完成了绑定关系
+ *  2.优化代码耦合度
  */
 
 public class SmartActivity extends AppCompatActivity
@@ -67,7 +87,7 @@ public class SmartActivity extends AppCompatActivity
     @Override
     public void addMain(final SmartFragment fragment, int containerViewId, final CommitCallBack commitCallBack) {
         final FragmentModel model = new FragmentModel();
-        model.tag = fragment.getTAG();
+//        model.tag = fragment.getTAG();
         model.index = fragmentList.getSize();
         model.containerViewId = containerViewId;
         model.isRoot = true;
@@ -76,9 +96,11 @@ public class SmartActivity extends AppCompatActivity
         model.isHidden = true;
         model.swipeBack = false;
         model.isInit = false;
-        model.brotherParentTag = fragment.getTAG();
         model.simpleName = fragment.getClass().getSimpleName();
         model.className = fragment.getClass().getName();
+        fragment.setTAG(model.simpleName + model.index);
+        model.tag = fragment.getTAG();
+        model.brotherParentTag = fragment.getTAG();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -100,7 +122,7 @@ public class SmartActivity extends AppCompatActivity
     @Override
     public void addChild(SmartFragment startF, final SmartFragment fragment, int containerViewId, final CommitCallBack commitCallBack) {
         final FragmentModel model = new FragmentModel();
-        model.tag = fragment.getTAG();
+//        model.tag = fragment.getTAG();
         model.index = fragmentList.getSize();
         model.parentTag = startF.getTAG();
         model.foreFragmentTag = null;
@@ -109,9 +131,11 @@ public class SmartActivity extends AppCompatActivity
         model.isInit = false;
         model.isRoot = false;
         model.containerViewId = containerViewId;
-        model.brotherParentTag = fragment.getTAG();
         model.simpleName = fragment.getClass().getSimpleName();
         model.className = fragment.getClass().getName();
+        fragment.setTAG(model.simpleName + model.index);
+        model.tag = fragment.getTAG();
+        model.brotherParentTag = fragment.getTAG();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -133,7 +157,7 @@ public class SmartActivity extends AppCompatActivity
     @Override
     public void addBrother(SmartFragment startF, final SmartFragment fragment, final CommitCallBack commitCallBack) {
         final FragmentModel model = new FragmentModel();
-        model.tag = fragment.getTAG();
+//        model.tag = fragment.getTAG();
         model.index = fragmentList.getSize();
         model.parentTag = startF.getFragmentModel().parentTag;
         model.foreFragmentTag = startF.getTAG();
@@ -145,6 +169,8 @@ public class SmartActivity extends AppCompatActivity
         model.brotherParentTag = startF.getFragmentModel().brotherParentTag;
         model.simpleName = fragment.getClass().getSimpleName();
         model.className = fragment.getClass().getName();
+        fragment.setTAG(model.simpleName + model.index);
+        model.tag = fragment.getTAG();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -166,7 +192,7 @@ public class SmartActivity extends AppCompatActivity
     @Override
     public void addAlone(SmartFragment startF, final SmartFragment fragment, final CommitCallBack commitCallBack) {
         final FragmentModel model = new FragmentModel();
-        model.tag = fragment.getTAG();
+//        model.tag = fragment.getTAG();
         model.parentTag = "final";
         model.brotherParentTag = "final";
         model.index = fragmentList.getSize();
@@ -178,6 +204,8 @@ public class SmartActivity extends AppCompatActivity
         model.containerViewId = startF.getFragmentModel().containerViewId;
         model.simpleName = fragment.getClass().getSimpleName();
         model.className = fragment.getClass().getName();
+        fragment.setTAG(model.simpleName + model.index);
+        model.tag = fragment.getTAG();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){

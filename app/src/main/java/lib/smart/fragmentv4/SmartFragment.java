@@ -26,6 +26,10 @@ import lib.smart.fragmentv4.anim.VerticalFragmentAnimation;
 public class SmartFragment extends Fragment
         implements SwipeBackLayout.OnSwipeListener {
 
+    private static String SAVED_INDEX = "SAVED_INDEX";
+
+    private static String SAVED_CLASS_NAME = "SAVED_CLASS_NAME";
+
     private String TAG;
 
     private FragmentModel fragmentModel;
@@ -48,7 +52,7 @@ public class SmartFragment extends Fragment
 
     public SmartFragment(){
         super();
-        TAG = UUID.randomUUID().toString().replaceAll("-","").substring(0,10);
+//        TAG = UUID.randomUUID().toString().replaceAll("-","").substring(0,10);
     }
 
     @Override
@@ -74,6 +78,12 @@ public class SmartFragment extends Fragment
         return swipeBackLayout;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_INDEX,fragmentModel.index+"");
+        outState.putString(SAVED_CLASS_NAME,fragmentModel.tag);
+    }
 
     @Override
     public void onDestroy() {
@@ -100,7 +110,7 @@ public class SmartFragment extends Fragment
     }
 
     public void smartUserVisible(boolean visible){
-        Log.e(getTAG(),getFragmentModel().index+":isShow?----->>>>>"+visible);
+        Log.e(getTAG(),getTAG()+" :isShow?----->>>>>"+visible);
         if(fragmentChangedListener != null){
             fragmentChangedListener.userVisible(visible);
         }
