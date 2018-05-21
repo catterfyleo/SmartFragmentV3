@@ -28,7 +28,7 @@ public class TestActivity extends SmartActivity {
         addMain(testMainFragment, R.id.contentFrameLayout, new CommitCallBack() {
             @Override
             public void onCommit(SmartFragment fragment) {
-                fragment.getAnimController().setFragmentAnim(new NoFragmentAnimation());
+//                fragment.getAnimController().setFragmentAnim(new NoFragmentAnimation());
             }
         });
         show(testMainFragment,null);

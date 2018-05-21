@@ -63,10 +63,10 @@ public class FragmentList {
      * 根据tag 查找自己的兄弟model，但是不包含自己
      */
     public List<FragmentModel> findBrotherModelsByTag(String tag){
-        FragmentModel fromModel = findModelByTag(tag);
+        FragmentModel selfModel = findModelByTag(tag);
         List<FragmentModel> list = new ArrayList<>();
         for(FragmentModel model : modelList){
-            if(model.brotherParentTag.equals(fromModel.brotherParentTag)){
+            if(model.brotherParentTag.equals(selfModel.brotherParentTag)){
                if(!model.brotherParentTag.equals(model.tag)){
                    list.add(model);
                }

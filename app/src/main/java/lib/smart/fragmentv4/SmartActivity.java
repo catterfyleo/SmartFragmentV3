@@ -140,7 +140,7 @@ public class SmartActivity extends AppCompatActivity
         model.isHidden = true;
         model.swipeBack = true;
         model.isInit = false;
-        model.isRoot = true;
+        model.isRoot = false;
         model.containerViewId = startF.getFragmentModel().containerViewId;
         model.brotherParentTag = startF.getFragmentModel().brotherParentTag;
         model.simpleName = fragment.getClass().getSimpleName();

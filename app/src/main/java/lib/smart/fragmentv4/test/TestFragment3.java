@@ -56,8 +56,10 @@ public class TestFragment3 extends SmartFragment {
             public void onClick(View v) {
                 TestFragment4 testFragment1 = TestFragment4.newInstance();
                 if(getParentSmartFragment() != null){
-                    getParentSmartFragment().addBrother(testFragment1,null);
-                    getParentSmartFragment().show(testFragment1,null);
+                    getParentSmartFragment().startFragment(testFragment1);
+//                    hide(getParentSmartFragment(),null);
+//                    getParentSmartFragment().addBrother(testFragment1,null);
+//                    getParentSmartFragment().show(testFragment1,null);
                 }
             }
         });

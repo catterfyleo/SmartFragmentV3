@@ -108,7 +108,7 @@ public class SwipeBackLayout extends FrameLayout {
     public void resetContentView(){
         int contentStartX = (int)contentView.getX();
         ValueAnimator valueAnimator = ValueAnimator.ofInt(contentStartX,0);
-        valueAnimator.setDuration(50);
+        valueAnimator.setDuration(100);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -132,7 +132,7 @@ public class SwipeBackLayout extends FrameLayout {
     public void closeContentView(){
         int contentStartX = (int)contentView.getX();
         ValueAnimator valueAnimator = ValueAnimator.ofInt(contentStartX,viewWidth + shadowViewWidth);
-        valueAnimator.setDuration(50);
+        valueAnimator.setDuration(100);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

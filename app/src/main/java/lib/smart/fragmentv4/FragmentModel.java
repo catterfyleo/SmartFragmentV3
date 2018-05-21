@@ -16,6 +16,7 @@ public class FragmentModel {
 
     public int containerViewId;
 
+    //如果tag == brotherParentTag，isRoot = true
     public boolean isRoot = true;
 
     //嵌套关系使用

@@ -53,8 +53,8 @@ public class TestMainFragment extends SmartFragment {
             @Override
             public void onClick(View v) {
                 show(testFragment1,null);
-                removeBrothers(currentFragment,null);
                 hide(currentFragment,null);
+                removeBrothers(currentFragment,null);
                 currentFragment = testFragment1;
             }
         });
@@ -64,8 +64,8 @@ public class TestMainFragment extends SmartFragment {
             @Override
             public void onClick(View v) {
                 show(testFragment2,null);
-                removeBrothers(currentFragment,null);
                 hide(currentFragment,null);
+                removeBrothers(currentFragment,null);
 
                 currentFragment = testFragment2;
 
@@ -77,8 +77,8 @@ public class TestMainFragment extends SmartFragment {
             @Override
             public void onClick(View v) {
                 show(testFragment3,null);
-                removeBrothers(currentFragment,null);
                 hide(currentFragment,null);
+                removeBrothers(currentFragment,null);
                 currentFragment = testFragment3;
             }
         });
