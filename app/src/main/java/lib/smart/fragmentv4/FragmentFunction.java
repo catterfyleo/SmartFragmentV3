@@ -48,6 +48,7 @@ public interface FragmentFunction {
 
     void remove(SmartFragment fragment,CommitCallBack commitCallBack);
 
+
     /**
      * 删除自己的兄弟fragment
      * @param formFragment

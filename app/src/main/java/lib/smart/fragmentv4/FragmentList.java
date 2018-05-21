@@ -31,14 +31,14 @@ public class FragmentList {
         return modelList;
     }
 
-    public void addModel(FragmentModel model){
+    public synchronized void addModel(FragmentModel model){
         modelList.add(model);
         if(fragmentListChangeListener != null){
             fragmentListChangeListener.addListener(model);
         }
     }
 
-    public void remove(String tag){
+    public synchronized void remove(String tag){
         for(FragmentModel model : modelList){
             if(model.tag.equals(tag)){
                 if(fragmentListChangeListener != null){

@@ -5,9 +5,11 @@ import android.support.annotation.Nullable;
 
 
 import lib.smart.fragment.R;
+import lib.smart.fragmentv4.CommitCallBack;
 import lib.smart.fragmentv4.FragmentChangedListener;
 import lib.smart.fragmentv4.SmartActivity;
 import lib.smart.fragmentv4.SmartFragment;
+import lib.smart.fragmentv4.anim.NoFragmentAnimation;
 
 /**
  * Created by Augustine on 2018/5/16.
@@ -23,7 +25,12 @@ public class TestActivity extends SmartActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TestMainFragment testMainFragment = TestMainFragment.newInstance();
-        addMain(testMainFragment,R.id.contentFrameLayout,null);
+        addMain(testMainFragment, R.id.contentFrameLayout, new CommitCallBack() {
+            @Override
+            public void onCommit(SmartFragment fragment) {
+                fragment.getAnimController().setFragmentAnim(new NoFragmentAnimation());
+            }
+        });
         show(testMainFragment,null);
         testMainFragment.setFragmentChangedListener(new FragmentChangedListener() {
             @Override
@@ -46,7 +53,7 @@ public class TestActivity extends SmartActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        if(!canBack()){
+        if(!goBack()){
             super.onBackPressed();
         }
     }

@@ -54,4 +54,24 @@ public class FragmentModel {
     //处于隐藏状态显示的动画
     public Animation popExitAnimation;
 
+    public String simpleName;
+
+    public String className;
+
+
+    @Override
+    public String toString() {
+        StringBuffer info = new StringBuffer();
+        info.append("tag : "+tag);
+        info.append("index : "+index);
+        info.append("containerViewId : "+containerViewId);
+        info.append("isRoot : "+isRoot);
+        info.append("parentTag : "+parentTag);
+        info.append("isHidden : "+isHidden);
+        info.append("swipeBack : "+swipeBack);
+        info.append("isInit : "+isInit);
+        info.append("simpleName : "+simpleName);
+        info.append("className : "+className);
+        return info.toString();
+    }
 }

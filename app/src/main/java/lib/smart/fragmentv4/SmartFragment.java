@@ -84,6 +84,7 @@ public class SmartFragment extends Fragment
     }
 
     //-----------------------public------------------------------------------
+
     public View initView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         return new View(getContext());
     }
@@ -242,7 +243,7 @@ public class SmartFragment extends Fragment
 
     public void addAlone(SmartFragment fragment, final CommitCallBack commitCallBack) throws Exception {
         if(getFragmentModel().parentTag.equals("final")){
-            throw new Exception();
+            throw new Exception("Alone Fragment 不能启动任意一个fragment");
         }
         getSmartActivity().addAlone(this,fragment,commitCallBack);
     }
@@ -362,6 +363,30 @@ public class SmartFragment extends Fragment
         }
     }
 
+    public void show(SmartFragment fragment){
+        show(fragment,null);
+    }
+
+    public void hide(SmartFragment fragment){
+        hide(fragment,null);
+    }
+
+    public void showNoAnim(SmartFragment fragment){
+        fragment.getFragmentModel().enterAnim = false;
+        fragment.getForeModel().popExitAnim = false;
+        show(fragment,null);
+    }
+
+
+    public void hideNoAnim(SmartFragment fragment){
+        fragment.getFragmentModel().popExitAnim = false;
+        hide(fragment,null);
+    }
+
+
+    public SmartFragment findFragmentByTag(String tag){
+        return (SmartFragment) getFragmentManager().findFragmentByTag(tag);
+    }
 
 
 }

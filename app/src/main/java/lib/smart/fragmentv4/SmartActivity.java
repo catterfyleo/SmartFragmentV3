@@ -29,6 +29,8 @@ public class SmartActivity extends AppCompatActivity
     //防止启动过快
     private boolean canStartFlag = true;
 
+    private FragmentTaskLog taskLog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +38,7 @@ public class SmartActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         showHideManager = new ShowHideManager();
         showHideManager.setFragmentManager(fragmentManager);
+        taskLog = new FragmentTaskLog(fragmentList);
         if(savedInstanceState != null){
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             for(int i = 0 ; i < fragmentManager.getFragments().size() ; i ++){
@@ -45,7 +48,7 @@ public class SmartActivity extends AppCompatActivity
         }
     }
 
-    public boolean canBack(){
+    public boolean goBack(){
         if(fragmentList.findModelsByParentTag("main").size() > 1){
             if(backPressed){
                 backPressed = false;
@@ -74,6 +77,8 @@ public class SmartActivity extends AppCompatActivity
         model.swipeBack = false;
         model.isInit = false;
         model.brotherParentTag = fragment.getTAG();
+        model.simpleName = fragment.getClass().getSimpleName();
+        model.className = fragment.getClass().getName();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -105,6 +110,8 @@ public class SmartActivity extends AppCompatActivity
         model.isRoot = false;
         model.containerViewId = containerViewId;
         model.brotherParentTag = fragment.getTAG();
+        model.simpleName = fragment.getClass().getSimpleName();
+        model.className = fragment.getClass().getName();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -136,6 +143,8 @@ public class SmartActivity extends AppCompatActivity
         model.isRoot = true;
         model.containerViewId = startF.getFragmentModel().containerViewId;
         model.brotherParentTag = startF.getFragmentModel().brotherParentTag;
+        model.simpleName = fragment.getClass().getSimpleName();
+        model.className = fragment.getClass().getName();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -167,6 +176,8 @@ public class SmartActivity extends AppCompatActivity
         model.isInit = false;
         model.isRoot = true;
         model.containerViewId = startF.getFragmentModel().containerViewId;
+        model.simpleName = fragment.getClass().getSimpleName();
+        model.className = fragment.getClass().getName();
         fragmentList.addModel(model);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(!fragment.isAdded()){
@@ -265,6 +276,10 @@ public class SmartActivity extends AppCompatActivity
         FragmentModel lastModel = fragmentList.getLastModel();
         SmartFragment lastFragment = (SmartFragment) fragmentManager.findFragmentByTag(lastModel.tag);
         remove(lastFragment,commitCallBack);
+    }
+
+    public void printTaskLog(){
+        taskLog.printLog();
     }
 
 //--------------------------------------------------------------------------------
