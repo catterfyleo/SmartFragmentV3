@@ -1,39 +1,27 @@
-# SmartFragmentV3
+# SmartFragmentV4
 
 
 https://github.com/CH-Augustine/SmartFragmentV3
 
 单Activity多Fragment的应用构架思想
 
-使用：
-main_activity.xml
-<FrameLayout
-    android:id="@+id/contentFrameLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</FrameLayout>
 
-MainActivity.class extends SmartActivity
+关于SmartFragmentV4的使用：
 
- MainFragment mainFragment = MainFragment.newInstance();
-        add(mainFragment, R.id.contentFrameLayout, new ICommitCallBack() {
-            @Override
-            public void onCommit(SmartFragment fragment) {
-                fragment.getModel().swipeBack = false;
-                fragment.getSwipeBackLayout().setOpenTouchSlide(false);
-                fragment.getModel().enterAnim = false;
-                fragment.getModel().exitAnim = false;
-                fragment.getModel().popEnterAnim = true;
-                fragment.getModel().popExitAnim = true;
-                show(fragment.getTAG());
-            }
-        });
-        
-    @Override
-    public void onBackPressed() {
-        if(!backPressed()){
-            super.onBackPressed();
-        }
-    }
-
+1.下载SmartFragmentV4的源代码
+2.新建lib工程，导入SmartFragmentV4的代码
+  tips:
+  请删除res中除anim & drawable 以外的所有资源文件
+  请删除src->main->lib.smart.fragmentv4->test包
+3.新建Activity，继承SmartActivity
+4.使用addMain() 添加一个mainFragment
+5.addChild() 用于Fragment嵌套
+6.addBrother() 用于添加一个普通的Fragment，亦可理解为添加一个同级Fragment
+7.addAlone() 添加一个独立的Fragment，该Fragment不可再次新增Fragment
+  可调用getFragmentModel()获取前一个Fragment对象来跳转界面
+8.灵活使用getParentSmartFragment()
+  嵌套时，获取当前对象的父级对象
+9.findFragmentByTag(tag)
+  可以获取任意一个在栈的Fragment对象
+10.FragmentModel拥有非常多的相关属性
+11.可以通过继承FragmentAnimator设置更多的Fragment过渡动画
